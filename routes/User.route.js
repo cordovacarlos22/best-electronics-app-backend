@@ -56,9 +56,9 @@ router.post("/register", async (req, res) => {
       lastName: req.body.lastName,
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password,
+      password:req.body.password,
     });
-    newUser.hashPassword(req.body.password);
+    // newUser.hashPassword(req.body.password);
     await newUser.save();
     res.json({
       result: newUser
