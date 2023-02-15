@@ -1,27 +1,28 @@
-const mongoose = require ("mongoose");
+const mongoose = require("mongoose");
 const crypto = require("crypto");
 
-//! parametros para configurar encrypt
+
+//! sets value for encryption config
 const encryptConfig = {
   "algorythm": "sha512",
   "iterarions": 1000,
   "length": 512
 }
 
-const UserSchema = new mongoose.Schema(
-  {
-    firstName: {type:String, required:true},
-    lastName: { type: String, required: true},
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },   
-    isAdmin:{type:Boolean, default:false},
-    
-  },
-  { timestamps: true },
-);
 
+//! user Schema 
+const UserSchema = new mongoose.Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false },
+  salt: String, // este campo es necesario, es la llave para leer la contraseña encryptada
+  createdAt: { type: String, default: Date.now }
+});
 
+//! hashes password
 UserSchema.methods.hashPassword = function (password) { // No funcionaba porque estabamos usando funcion flecha y la instrucción
   this.salt = crypto.randomBytes(10).toString("hex");
   var encrypted = crypto
@@ -29,8 +30,10 @@ UserSchema.methods.hashPassword = function (password) { // No funcionaba porque 
     .toString("hex");
   this.password = encrypted;
 }
-
+//! decry password after it has been hashed
 UserSchema.methods.validatePassword = function (password) {
+  //* hashed -> decypted -> check if =  (password)
+  //*  password ==   -> hashes -> check if ==  (hashed en modelo)
 
   var hashedPwd = crypto
     .pbkdf2Sync(password, this.salt, encryptConfig.iterarions, encryptConfig.length, encryptConfig.algorythm)
@@ -38,6 +41,7 @@ UserSchema.methods.validatePassword = function (password) {
   return this.password === hashedPwd;
 }
 
-const User = mongoose.model('user', UserSchema);
+//! exports userSchema as User
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

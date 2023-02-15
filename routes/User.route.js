@@ -2,10 +2,13 @@
 const router = require("express").Router();
 
 const User = require("../models/User.model");
+
+
 //!user test end point
 router.get("/usertest", (req, res) => {
   res.send("user test is passed");
 });
+
 //!user post test end point
 router.post("/userposttest", (req, res) => {
   const username = req.body.username;
@@ -20,20 +23,8 @@ router.post("/userposttest", (req, res) => {
 
 //---------------------- //
 
-//! end point for user 
-
-//? get users 
-router.get("/userslist", async (req, res) => {
-  const users = await User.find();
-  console.log(users);
-  res.send({
-    "users": users
-  });
-});
-
-//? gets user by id 
-//! * ocupo solucinar esto *
-router.get("/usersbyid", async (req, res) => {
+//! end point to get user by id
+router.get('/id', async (req, res) => {
   try {
     console.log(req.user);
     const current = await User.findById(req.user.id);
@@ -48,7 +39,8 @@ router.get("/usersbyid", async (req, res) => {
 });
 
 
-//? Register 
+
+//! end point to register user
 router.post("/register", async (req, res) => {
   try {
     const newUser = new User({
@@ -58,7 +50,7 @@ router.post("/register", async (req, res) => {
       email: req.body.email,
       password:req.body.password,
     });
-    // newUser.hashPassword(req.body.password);
+    newUser.hashPassword(req.body.password);
     await newUser.save();
     res.json({
       result: newUser
@@ -69,5 +61,17 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
+//! end poind to find user account by id 
+router.get("/account", async (req, res) => {
+  const user = await User.findById(req.user.id);
+  res.send({
+    "name": user.firstName,
+    "lastname": user.lastName,
+    "dateofbird": user.dateOfBirth
+  });
+
+  
+});
 
 module.exports = router;
