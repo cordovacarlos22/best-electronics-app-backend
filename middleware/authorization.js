@@ -25,7 +25,7 @@ const validateAccess = (req, res, next) => {
       if (!admin) {
         throw new Error("Sorry Your are not admin")
       }
-      const payload = readToken(token);
+      const payload = readToken(admin);
       req.user = payload;
       next();
     } else throw new Error("Token is requiered to achieve this service.");

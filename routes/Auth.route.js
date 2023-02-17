@@ -1,9 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User.model");
+const jwt = require("jsonwebtoken");
 const { validateAccess } = require("../middleware/authorization");
-const { generateToken } = require("../middleware/authorization");
 
+
+//! end point to register user
+router.post("/register", async (req, res) => {
+  try {
+    const newUser = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+    });
+    newUser.hashPassword(req.body.password);
+    await newUser.save();
+    res.json({
+      result: newUser
+    });
+
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 //! route or end point to /user/login does login
 router.post('/login', async (req, res) => {
@@ -12,14 +33,19 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ "username": username });
     if (user) {
       if (user.validatePassword(password)) {
-        const token = generateToken({
-          id: user.id,
+
+        const accessToken = jwt.sign({
+          id: user._id,
+          isAdmin: user.isAdmin,
           username: user.username
+        }, process.env.JWT_SECRET_KEY, {
+          expiresIn: "1d"
         });
-        res.json({
-          result: token,
-          found: "yes"
-        });
+
+        //! passes all inputs but password
+        const { password, ...others } = user._doc;
+        res.status(201).json({ ...others, accessToken })
+
       } else {
         res.status(401)
         res.json({
@@ -38,6 +64,45 @@ router.post('/login', async (req, res) => {
   }
 });
 
+//! end pont to update user password
+router.put("/updatepassword/:id", validateAccess, async (req, res) => {
+
+  try {
+
+    const newUser = await User.findByIdAndUpdate(req.params.id, {
+      $set: req.body
+    }, { new: true });
+    newUser.hashPassword(req.body.password);
+    await newUser.save();
+    res.status(200).json(newUser);
+  }
+
+
+  catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//! end pont to update user password
+router.put("/updateuser/:id", validateAccess, async (req, res) => {
+
+  try {
+
+    const newUser = await User.findByIdAndUpdate(req.params.id, {
+      $set: req.body
+    }, { new: true });
+    
+    await newUser.save();
+    res.status(200).json(newUser);
+  }
+
+
+  catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+
 //! not done 
 router.post('/logout', async (req, res) => {
   try {
@@ -50,20 +115,20 @@ router.post('/logout', async (req, res) => {
 });
 
 
-router.post("/admin",validateAccess,  async(req,res)=>{
-  
-try {
-  res.status(201)
-  res.json({
-    admin:"yes",
-  });
+router.post("/admin", validateAccess, async (req, res) => {
 
-  
-} catch (error) {
-  res.status(500).json(error)
-  res.json(error);
-  console.error(error)
-}
+  try {
+    res.status(201)
+    res.json({
+      admin: "yes",
+    });
+
+
+  } catch (error) {
+    res.status(500).json(error)
+    res.json(error);
+    console.error(error)
+  }
 
 });
 
