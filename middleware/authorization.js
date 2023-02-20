@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 
+const User = require("../models/User.model");
 const secret = process.env.JWT_SECRET_KEY;
+
+
 //! generates token 
 const generateToken = (payload) => {
   return jwt.sign(payload, secret);
@@ -15,7 +18,7 @@ const readToken = (token) => {
     throw new Error("Invalid token provided");
   }
 }
-//! valitdates accces to admin 
+//! valitdates accces to user
 const validateAccess = (req, res, next) => {
   try {
     var { authorization } = req.headers;
@@ -36,4 +39,26 @@ const validateAccess = (req, res, next) => {
 
 }
 
-module.exports = { generateToken, readToken, validateAccess };
+//! valitdates accces to user
+const validateAccessAndAdmin = (req, res, next) => {
+  try {
+    var { authorization } = req.headers;
+    
+    if (authorization) {
+      // var [type, token] = authorization.split(" ");
+      let [type, admin] = authorization.split(" ");
+      if (!admin) {
+        throw new Error("Sorry Your are not admin")
+      }
+      const payload = readToken(admin);
+      req.user = payload;
+      next();
+    } else throw new Error("You need to be an admin to is requiered to achieve this service.");
+  } catch (error) {
+    res.status(403);
+    res.end(error.message);
+  }
+
+}
+
+module.exports = { generateToken, readToken, validateAccess, validateAccessAndAdmin };

@@ -1,7 +1,7 @@
 //! creates server 
 //? imports express
 const express = require("express");
-
+const cors = require("cors");
 //? starts express
 const app = express();
 //? import mongoose
@@ -9,11 +9,17 @@ const mongoose = require("mongoose");
 //? import dotenv
 require('dotenv').config();
 //* import userRouter
-const userRoute = require("./routes/User.route")
+const userRoute = require("./routes/User.route");
 //* imports SliderRouter
 const SliderRoute = require("./routes/Slider.route");
 //* imports authRoute
-const authRoute = require('./routes/Auth.route')
+const authRoute = require('./routes/Auth.route');
+//* imports Product
+const productRoute = require('./routes/Product.route');
+//* imports Cart
+const cartRoute = require('./routes/Cart.route');
+//* imports Product
+const orderRoute = require('./routes/Order.route');
 
 //?  CONFIG FOR SERVER PORT
 const PORT = process.env.PORT
@@ -30,6 +36,7 @@ try {
 
 //! takes json  as param
 app.use(express.json());
+app.use(cors());
 //? route to userstest
 app.use("/userstest", userRoute);
 //? route to users
@@ -38,7 +45,12 @@ app.use("/users",userRoute);
 app.use("/auth", authRoute);
 //? route to sliders
 app.use("/slider", SliderRoute);
-
+//?route to product
+app.use("/products",productRoute);
+//?route to cart
+app.use("/carts", cartRoute);
+//?route to order
+app.use("/orders", orderRoute);
 
 //! api test check end point
 app.get("/api/test", (req, res) => {

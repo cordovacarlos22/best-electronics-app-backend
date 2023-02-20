@@ -8,8 +8,8 @@ const encryptConfig = {
   "iterarions": 1000,
   "length": 512
 }
-
-
+ 
+ 
 //! user Schema 
 const UserSchema = new mongoose.Schema({
   firstName: { type: String, required: true, unique: false},

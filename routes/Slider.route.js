@@ -3,15 +3,20 @@ const Slider = require("../models/Slider.model");
 
 
 //? get Sliders 
-router.get("/sliderslist", async (req, res) => {
- try {
-   const sliders = await Slider.find();
-   console.log(sliders);
-   res.json({ sliders });
- } catch (error) {
-   res.json(error);
- }
-});
+router.get('/', async (req, res) => {
+  try {
+    const sliders = await Slider.find();
+    res.status(200);
+    
+    res.send({
+      result: sliders
+    });
+
+  } catch (error) {
+    res.json(error)
+    console.error(error);
+  }
+})
 
 //? add slider to carousel
 router.post("/item", async (req, res) => {

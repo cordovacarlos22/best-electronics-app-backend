@@ -1,18 +1,54 @@
 
 const router = require("express").Router();
-
 const User = require("../models/User.model");
-const { validateAccess } = require("../middleware/authorization");
+const { validateAccess, validateAccessAndAdmin } = require("../middleware/authorization");
 
 
-//? get users 
-router.get("/userslist", async (req, res) => {
+//? get all  users 
+router.get("/userslist", validateAccess, async (req, res) => {
   const users = await User.find();
   console.log(users);
   res.send({
     "users": users
   });
 });
+
+
+//? delete user
+router.delete("/:id",validateAccess,async(req,res)=>{
+ try {
+  await User.findOneAndDelete(req.params.id);
+  res.status(200).json("user has been deleted..")
+ } catch (error) {
+   res.status(500).json(error);
+ }
+});
+
+//? get user
+router.get("/find/:id",validateAccessAndAdmin, async (req, res) => {
+  try {
+   const user = await User.findById(req.params.id);
+    const {password, ...others} = user._doc;
+    res.status(200).json({others})
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//? delete user
+router.delete("/find/:id", validateAccessAndAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    const { password, ...others } = user._doc;
+    res.status(200).json({ others })
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+
+
+
 
 
 
