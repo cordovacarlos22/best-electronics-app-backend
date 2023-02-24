@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     res.status(200);
     
     res.send({
-      result: sliders
+    slider:sliders
     });
 
   } catch (error) {
@@ -27,6 +27,7 @@ router.post("/item", async (req, res) => {
       title: req.body.title,
       alt: req.body.alt,
       url: req.body.url,
+      category:req.body.category
 
     });
 

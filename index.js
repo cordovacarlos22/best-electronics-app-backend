@@ -20,6 +20,8 @@ const productRoute = require('./routes/Product.route');
 const cartRoute = require('./routes/Cart.route');
 //* imports Product
 const orderRoute = require('./routes/Order.route');
+//* imports Product
+const stripeRoute = require('./routes/Stripe');
 
 //?  CONFIG FOR SERVER PORT
 const PORT = process.env.PORT
@@ -33,6 +35,7 @@ try {
 } catch (error) {
   console.error(error);
 };
+
 
 //! takes json  as param
 app.use(express.json());
@@ -51,6 +54,8 @@ app.use("/products",productRoute);
 app.use("/carts", cartRoute);
 //?route to order
 app.use("/orders", orderRoute);
+//? route to stripe
+app.use("/pay",stripeRoute);
 
 //! api test check end point
 app.get("/api/test", (req, res) => {

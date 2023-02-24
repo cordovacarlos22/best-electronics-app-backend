@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 
 const SlidertSchema = new mongoose.Schema(
   {
-    id: { type: Number,},
-    title: { type: String, required: true},
-    alt: { type: String, required: true },
-    url: { type: String, required: true },
+    id: { type: Number, },
+    img: { type: String, required: true },
+    title: { type: String, required: true },
+    desc: { type: String, required: true },
+    bg:{type:String,require:true},
+    category: { type: String, required: true }
   },
   { timestamps: true }
 );
