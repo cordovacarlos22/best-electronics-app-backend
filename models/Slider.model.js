@@ -7,7 +7,7 @@ const SlidertSchema = new mongoose.Schema(
     title: { type: String, required: true },
     desc: { type: String, required: true },
     bg:{type:String,require:true},
-    category: { type: String, required: true }
+    
   },
   { timestamps: true }
 );

@@ -19,14 +19,15 @@ router.get('/', async (req, res) => {
 })
 
 //? add slider to carousel
-router.post("/item", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const newSlider = new Slider({
 
       id: req.body.id,
+      img:req.body.img,
+      desc:req.body.desc,
       title: req.body.title,
       alt: req.body.alt,
-      url: req.body.url,
       category:req.body.category
 
     });

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
-const { validateAccess } = require("../middleware/authorization");
+const { validateAccess, generateToken } = require("../middleware/authorization");
 
 
 //! end point to register user
@@ -33,18 +33,13 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ "username": username });
     if (user) {
       if (user.validatePassword(password)) {
-
-        const accessToken = jwt.sign({
-          id: user._id,
-          isAdmin: user.isAdmin,
-          username: user.username
-        }, process.env.JWT_SECRET_KEY, {
-          expiresIn: "1d"
+        const token = generateToken({
+          id: user.id,
+          name: user.firstName
         });
-
-        //! passes all inputs but password
-        const { password, ...others } = user._doc;
-        res.status(201).json({ ...others, accessToken })
+        res.json({
+          result: token
+        });
 
       } else {
         res.status(401)

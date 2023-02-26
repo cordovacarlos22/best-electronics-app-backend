@@ -1,38 +1,41 @@
 
-const Product = require("../models/Product.model");
-const {validateAccessAndAdmin } = require("../middleware/authorization");
+const newsletter = require("../models/Newsletter.model");
+const { validateAccessAndAdmin } = require("../middleware/authorization");
 
 const router = require("express").Router();
 
-//!product test end point
-router.get("/productgetcheck", (req, res) => {
-  res.send("user test is passed");
-});
+
 
 //CREATE
 
 router.post("/", async (req, res) => {
-  const newProduct = new Product(req.body);
-
   try {
-    const savedProduct = await newProduct.save();
-    res.status(200).json(savedProduct);
+    const newSubs = new newsletter({
+      
+      email: req.body.email,
+    });
+  
+    await newSubs.save();
+    res.json({
+      result: newSubs
+    });
+
   } catch (err) {
-    res.status(500).json(err);
+    console.error(err.message);
   }
 });
 
 //UPDATE
 router.put("/:id", validateAccessAndAdmin, async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(
+    const updatedsusb = await newsletter.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
       },
       { new: true }
     );
-    res.status(200).json(updatedProduct);
+    res.status(200).json(updatedsusb);
   } catch (err) {
     res.status(500).json(err);
   }

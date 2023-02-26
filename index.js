@@ -22,6 +22,8 @@ const cartRoute = require('./routes/Cart.route');
 const orderRoute = require('./routes/Order.route');
 //* imports Product
 const stripeRoute = require('./routes/Stripe');
+//* imports Product
+const newsletterRoute = require('./routes/Newsletter.route');
 
 //?  CONFIG FOR SERVER PORT
 const PORT = process.env.PORT
@@ -56,6 +58,8 @@ app.use("/carts", cartRoute);
 app.use("/orders", orderRoute);
 //? route to stripe
 app.use("/pay",stripeRoute);
+//? route to stripe
+app.use("/newsletter", newsletterRoute);
 
 //! api test check end point
 app.get("/api/test", (req, res) => {

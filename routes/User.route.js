@@ -48,7 +48,12 @@ router.delete("/find/:id", validateAccessAndAdmin, async (req, res) => {
 
 
 
-
+router.get("/account", validateAccess, async (req, res) => {
+  const user = await User.findById(req.user.id);
+  res.send({
+    "name": user.firstName,  
+  });
+})
 
 
 

@@ -4,13 +4,14 @@ const ProductSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true },
     src: { type: String, required: true },
-    title: { type: String, required: true},
+    title: { type: String, required: true },
     price: { type: Number, required: true },
     regprice: { type: Number, required: true },
     desc: { type: String, required: true },
+    sku:{type:String,required:true},
     categories: { type: Array, required: true },
-    inStock: { type: Boolean , default: true},
-    href:{ type: String, required: true },
+    inStock: { type: Boolean, default: true },
+    href: { type: String, required: true },
 
   },
   { timestamps: true }

@@ -11,7 +11,7 @@ router.get("/productgetcheck", (req, res) => {
 
 //CREATE
 
-router.post("/", async (req, res) => {
+router.post("/",validateAccessAndAdmin, async (req, res) => {
   const newProduct = new Product(req.body);
 
   try {
